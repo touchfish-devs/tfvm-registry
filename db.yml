@@ -10,7 +10,7 @@ touchfish:
 tfvm:
   Name: tfvm
   Comment: TouchFish Version Manager
-  Version: 1.1.0
+  Version: 1.2.0
   Release: 1
   Registry: https://github.com/touchfish-devs/tfvm/archive/refs/tags/v$version$.tar.gz
   Exec: main.py
