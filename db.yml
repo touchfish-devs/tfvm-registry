@@ -4,7 +4,7 @@ touchfish:
   Version: 4.8.0
   Release: 2
   Registry: "https://github.com/touchfish-devs/TouchFish-AUR/archive/refs/tags/v$version$.tar.gz"
-  Exec: touchfish
+  Exec: LTS.py
   Binary:
     - LTS.py
 
