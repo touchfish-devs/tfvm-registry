@@ -7,13 +7,25 @@ touchfish:
   Exec: LTS.py
   Binary:
     - LTS.py
+  Depends:
+    - tfvm
 tfvm:
   Name: tfvm
   Comment: TouchFish Version Manager
-  Version: 1.2.0
+  Version: 1.3.0
   Release: 1
   Registry: https://github.com/touchfish-devs/tfvm/archive/refs/tags/v$version$.tar.gz
   Exec: main.py
   Binary:
     - main.py    
-
+touchfish-client-build:
+  Name: TouchFish Client Build
+  Comment: "TouchFish Client development build (2026-07-06, commit 2c8cf28)"
+  Version: 2c8cf28
+  Release: 1
+  Registry: "https://github.com/ILoveScratch2/TouchFish-Client/releases/download/dev-build/touchfish-linux-x64.zip"
+  Exec: touchfish-client
+  Binary:
+    - touchfish-client
+  Depends:
+    - tfvm
