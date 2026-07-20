@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TouchFish 软件包仓库</title>
+    <!-- 使用 js-yaml 解析 YAML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            color: #1a202c;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b6cb0;
+        }
+        header h1 small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #4a5568;
+            margin-left: 0.5rem;
+        }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            padding: 0.6rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 260px;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+        }
+        .search-box .badge {
+            background: #edf2f7;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+        }
+        .stats {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            color: #4a5568;
+        }
+        .stats span {
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .package-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #edf2f7;
+            display: flex;
+            flex-direction: column;
+        }
+        .package-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .package-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .package-name .version {
+            font-size: 0.85rem;
+            font-weight: 400;
+            background: #ebf4ff;
+            color: #2b6cb0;
+            padding: 0.1rem 0.6rem;
+            border-radius: 12px;
+        }
+        .package-desc {
+            margin: 0.6rem 0 0.8rem 0;
+            color: #4a5568;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+        .package-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 0.8rem;
+            border-top: 1px solid #edf2f7;
+            padding-top: 0.8rem;
+        }
+        .package-meta .label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+        .package-deps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin: 0.3rem 0;
+        }
+        .dep-tag {
+            background: #e2e8f0;
+            padding: 0.1rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #2d3748;
+        }
+        .package-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.6rem;
+            font-size: 0.85rem;
+        }
+        .package-links a {
+            color: #2b6cb0;
+            text-decoration: none;
+            border-bottom: 1px dotted transparent;
+            transition: border-color 0.2s;
+        }
+        .package-links a:hover {
+            border-bottom-color: #2b6cb0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 0;
+            color: #a0aec0;
+        }
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        footer {
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: #4a5568;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 640px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            .search-box input {
+                width: 100%;
+            }
+            .package-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* 加载动画 */
+        .loader {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #2b6cb0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 3rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>📦 TouchFish 仓库 <small>软件包列表</small></h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 搜索包名或描述..." />
+            <span class="badge" id="countBadge">0 个包</span>
+        </div>
+    </header>
+
+    <div id="stats" class="stats hidden">
+        共 <span id="totalCount">0</span> 个软件包，当前显示 <span id="shownCount">0</span> 个
+    </div>
+
+    <div id="loader" class="loader"></div>
+
+    <div id="packageContainer" class="package-grid"></div>
+
+    <div id="emptyState" class="empty-state hidden">
+        <h2>😕 没有找到匹配的包</h2>
+        <p>请尝试调整搜索关键词</p>
+    </div>
+
+    <footer>
+        <p>数据源：<a href="db.yml" target="_blank">db.yml</a> &nbsp;·&nbsp; 
+        <a href="https://github.com/touchfish-devs/tfvm" target="_blank">tfvm GitHub</a></p>
+    </footer>
+</div>
+
+<script>
+    (function() {
+        const searchInput = document.getElementById('searchInput');
+        const container = document.getElementById('packageContainer');
+        const loader = document.getElementById('loader');
+        const emptyState = document.getElementById('emptyState');
+        const stats = document.getElementById('stats');
+        const totalCountSpan = document.getElementById('totalCount');
+        const shownCountSpan = document.getElementById('shownCount');
+        const countBadge = document.getElementById('countBadge');
+
+        let allPackages = []; // 存储所有包数据
+
+        // 从 db.yml 获取数据
+        async function fetchPackages() {
+            try {
+                const response = await fetch('https://reg.touchfish.us.ci/db.yml');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const yamlText = await response.text();
+                // 使用 js-yaml 解析
+                const data = jsyaml.load(yamlText);
+                if (!data || typeof data !== 'object') {
+                    throw new Error('无效的 YAML 格式');
+                }
+                // 转换为数组，便于搜索
+                const packages = [];
+                for (const [name, info] of Object.entries(data)) {
+                    packages.push({
+                        name: name,
+                        ...info
+                    });
+                }
+                allPackages = packages;
+                renderPackages(allPackages);
+                updateStats(allPackages, allPackages);
+            } catch (err) {
+                console.error('加载包数据失败:', err);
+                container.innerHTML = `
+                    <div class="empty-state" style="display:block;">
+                        <h2>⚠️ 加载失败</h2>
+                        <p>无法获取包列表，请稍后重试。</p>
+                        <p style="font-size:0.85rem;color:#a0aec0;">${err.message}</p>
+                    </div>
+                `;
+                loader.classList.add('hidden');
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        // 渲染包卡片
+        function renderPackages(packages) {
+            if (!packages || packages.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                stats.classList.add('hidden');
+                countBadge.textContent = '0 个包';
+                return;
+            }
+            emptyState.classList.add('hidden');
+            stats.classList.remove('hidden');
+
+            let html = '';
+            packages.forEach(pkg => {
+                const deps = pkg.Depends || [];
+                const depHtml = deps.length ? 
+                    `<div class="package-deps">${deps.map(d => `<span class="dep-tag">${d}</span>`).join('')}</div>` : 
+                    '<div style="font-size:0.8rem;color:#a0aec0;">无依赖</div>';
+
+                // 构建下载链接（如果有镜像站）
+                let registryUrl = pkg.Registry || '';
+                if (registryUrl) {
+                    registryUrl = registryUrl.replace(/\$version\$/g, pkg.Version || '');
+                }
+
+                html += `
+                    <div class="package-card">
+                        <div class="package-name">
+                            ${pkg.name}
+                            <span class="version">v${pkg.Version || '?'}</span>
+                            ${pkg.Release ? `<span class="version" style="background:#fefcbf;color:#975a16;">rel ${pkg.Release}</span>` : ''}
+                        </div>
+                        <div class="package-desc">${pkg.Comment || '无描述'}</div>
+                        <div class="package-meta">
+                            <span><span class="label">全名：</span>${pkg.Name || pkg.name}</span>
+                            ${pkg.Exec ? `<span><span class="label">可执行：</span>${pkg.Exec}</span>` : ''}
+                        </div>
+                        ${depHtml}
+                        <div class="package-links">
+                            ${registryUrl ? `<a href="${registryUrl}" target="_blank">📥 下载源码</a>` : ''}
+                            ${pkg.Binary ? `<span style="color:#718096;">📂 二进制: ${pkg.Binary.join(', ')}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            countBadge.textContent = `${packages.length} 个包`;
+            updateStats(allPackages, packages);
+        }
+
+        function updateStats(all, shown) {
+            totalCountSpan.textContent = all.length;
+            shownCountSpan.textContent = shown.length;
+        }
+
+        // 搜索过滤（不区分大小写，支持包名、全名、描述）
+        function filterPackages(query) {
+            if (!query.trim()) return allPackages;
+            const q = query.trim().toLowerCase();
+            return allPackages.filter(pkg => {
+                return pkg.name.toLowerCase().includes(q) ||
+                       (pkg.Name && pkg.Name.toLowerCase().includes(q)) ||
+                       (pkg.Comment && pkg.Comment.toLowerCase().includes(q));
+            });
+        }
+
+        // 搜索事件
+        searchInput.addEventListener('input', function() {
+            const filtered = filterPackages(this.value);
+            renderPackages(filtered);
+        });
+
+        // 初始加载
+        fetchPackages();
+    })();
+</script>
+</body>
+</html>
