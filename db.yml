@@ -32,8 +32,9 @@ tfvm:
 touchfish-client-build:
   Name: TouchFish Client Build
   Comment: "TouchFish Client development build (2026-07-06, commit 2c8cf28)"
-  Version: 2c8cf28
-  Release: 1
+  Version: build
+  Release: 9999
+  Provides: touchfish-client
   Registry: "https://github.com/ILoveScratch2/TouchFish-Client/releases/download/dev-build/touchfish-linux-x64.zip"
   Exec: touchfish-client
   Binary:
