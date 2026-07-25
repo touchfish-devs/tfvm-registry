@@ -36,8 +36,8 @@ touchfish-client-build:
   Release: 9999
   Provides: touchfish-client
   Registry: "https://github.com/ILoveScratch2/TouchFish-Client/releases/download/dev-build/touchfish-linux-x64.zip"
-  Exec: touchfish-client
+  Exec: touchfish_client
   Binary:
-    - touchfish-client
+    - touchfish_client
   Depends:
     - tfvm
