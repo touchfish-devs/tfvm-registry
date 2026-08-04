@@ -29,6 +29,16 @@ tfvm:
   Exec: main.py
   Binary:
     - main.py    
+python:
+  Name: Python
+  Comment: "CPython - The Python programming language"
+  Version: 3.12.4
+  Release: 1
+  Registry: "https://github.com/python/cpython/archive/refs/tags/v$version$.tar.gz"
+  Exec: python3
+  Binary:
+    - python3
+
 touchfish-client-build:
   Name: TouchFish Client Build
   Comment: "TouchFish Client development build (2026-07-06, commit 2c8cf28)"
