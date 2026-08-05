@@ -3,376 +3,848 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TouchFish 软件包仓库</title>
-    <!-- 使用 js-yaml 解析 YAML -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <title>TouchFish TFVM Registry</title>
     <style>
+        /* ===== 全局重置 & 字体 ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f6f9;
-            color: #1a202c;
-            padding: 2rem 1rem;
+            font-family: "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+            background: #f5f6f7;
+            color: #222;
+            line-height: 1.5;
+            padding: 20px;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        header {
+
+        /* ===== 头部 ===== */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 1rem;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #d9d9d9;
+            margin-bottom: 20px;
         }
-        header h1 {
-            font-size: 2rem;
+
+        .header h1 {
+            font-size: 24px;
             font-weight: 700;
-            color: #2b6cb0;
+            color: #1793d0;
+            letter-spacing: -0.5px;
         }
-        header h1 small {
-            font-size: 1rem;
+        .header h1 small {
+            font-size: 14px;
             font-weight: 400;
-            color: #4a5568;
-            margin-left: 0.5rem;
+            color: #666;
+            margin-left: 8px;
         }
-        .search-box {
+
+        /* ===== 搜索栏 ===== */
+        .search-bar {
             display: flex;
-            gap: 0.5rem;
+            gap: 8px;
             flex-wrap: wrap;
+            align-items: center;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
-        .search-box input {
-            padding: 0.6rem 1rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            width: 260px;
-            transition: border-color 0.2s;
-        }
-        .search-box input:focus {
+        .search-bar input[type="text"] {
+            border: none;
+            padding: 6px 10px;
+            font-size: 15px;
+            min-width: 220px;
             outline: none;
-            border-color: #2b6cb0;
-            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+            background: transparent;
         }
-        .search-box .badge {
-            background: #edf2f7;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #4a5568;
-            display: flex;
-            align-items: center;
+        .search-bar input[type="text"]:focus {
+            box-shadow: 0 0 0 2px rgba(23, 147, 208, 0.25);
         }
-        .stats {
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-            color: #4a5568;
-        }
-        .stats span {
-            font-weight: 600;
-            color: #2b6cb0;
-        }
-        .package-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        .package-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #edf2f7;
-            display: flex;
-            flex-direction: column;
-        }
-        .package-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-        }
-        .package-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .package-name .version {
-            font-size: 0.85rem;
-            font-weight: 400;
-            background: #ebf4ff;
-            color: #2b6cb0;
-            padding: 0.1rem 0.6rem;
-            border-radius: 12px;
-        }
-        .package-desc {
-            margin: 0.6rem 0 0.8rem 0;
-            color: #4a5568;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            flex-grow: 1;
-        }
-        .package-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem 0.8rem;
-            font-size: 0.85rem;
-            color: #718096;
-            margin-bottom: 0.8rem;
-            border-top: 1px solid #edf2f7;
-            padding-top: 0.8rem;
-        }
-        .package-meta .label {
+        .search-bar button {
+            background: #1793d0;
+            border: none;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
             font-weight: 500;
-            color: #4a5568;
         }
-        .package-deps {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            margin: 0.3rem 0;
+        .search-bar button:hover {
+            background: #0f7ab0;
         }
-        .dep-tag {
-            background: #e2e8f0;
-            padding: 0.1rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #2d3748;
+
+        /* ===== 统计信息 ===== */
+        .stats {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 14px;
+            padding: 6px 0;
         }
-        .package-links {
-            display: flex;
-            gap: 0.8rem;
-            margin-top: 0.6rem;
-            font-size: 0.85rem;
+        .stats strong {
+            color: #1793d0;
         }
-        .package-links a {
-            color: #2b6cb0;
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            background: #fff;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        table.pkg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        table.pkg-table thead th {
+            background: #f0f2f5;
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #d9d9d9;
+            white-space: nowrap;
+        }
+        table.pkg-table tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        table.pkg-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .pkg-name {
+            font-weight: 600;
+            color: #1793d0;
+            cursor: pointer;
             text-decoration: none;
-            border-bottom: 1px dotted transparent;
-            transition: border-color 0.2s;
         }
-        .package-links a:hover {
-            border-bottom-color: #2b6cb0;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 4rem 0;
-            color: #a0aec0;
-        }
-        .empty-state h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        footer {
-            margin-top: 3rem;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 1.5rem;
-            text-align: center;
-            color: #a0aec0;
-            font-size: 0.9rem;
-        }
-        footer a {
-            color: #4a5568;
-            text-decoration: none;
-        }
-        footer a:hover {
+        .pkg-name:hover {
             text-decoration: underline;
         }
-        @media (max-width: 640px) {
-            header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-            }
-            .search-box input {
-                width: 100%;
-            }
-            .package-grid {
-                grid-template-columns: 1fr;
-            }
+        .pkg-version {
+            color: #555;
+            font-weight: 500;
+            white-space: nowrap;
         }
-        /* 加载动画 */
+        .pkg-release {
+            color: #888;
+            font-size: 13px;
+            margin-left: 2px;
+        }
+        .pkg-desc {
+            color: #444;
+            max-width: 360px;
+        }
+        .pkg-meta {
+            font-size: 13px;
+            color: #777;
+        }
+        .pkg-meta .label {
+            color: #555;
+            font-weight: 500;
+        }
+        .pkg-deps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 6px;
+            margin-top: 2px;
+        }
+        .dep-tag {
+            background: #eef2f5;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #333;
+        }
+        .build-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            text-transform: uppercase;
+        }
+
+        /* ===== 分页 ===== */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 16px;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+        .pagination .info {
+            color: #555;
+            margin-right: auto;
+        }
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #1793d0;
+            border: 1px solid transparent;
+        }
+        .pagination a:hover {
+            background: #f0f4f8;
+            border-color: #ccc;
+        }
+        .pagination .active {
+            background: #1793d0;
+            color: #fff;
+            border-color: #1793d0;
+        }
+        .pagination .disabled {
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        /* ===== 加载 & 空状态 ===== */
         .loader {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #2b6cb0;
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+        .loader .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid #ddd;
+            border-top-color: #1793d0;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 3rem auto;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
-        .hidden {
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+        .empty-state h3 {
+            font-weight: 400;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            max-width: 560px;
+            width: 90%;
+            border-radius: 8px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            background: none;
+            border: none;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1793d0;
+            margin-bottom: 4px;
+        }
+        .modal-sub {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+        .modal-field {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .modal-field .label {
+            width: 80px;
+            font-weight: 500;
+            color: #555;
+            flex-shrink: 0;
+        }
+        .modal-field .value {
+            flex: 1;
+            color: #222;
+            word-break: break-all;
+        }
+        .modal-field .value code {
+            background: #f0f2f5;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        .modal-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-actions .btn {
+            padding: 8px 18px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #1793d0;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #0f7ab0;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #1793d0;
+            border: 1px solid #1793d0;
+        }
+        .btn-outline:hover {
+            background: #eef7fc;
+        }
+        .btn-success {
+            background: #2e7d32;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #1e5a22;
+        }
+        .copy-cmd {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f2f5;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .copy-cmd button {
+            background: #555;
+            color: #fff;
+            border: none;
+            padding: 2px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-cmd button:hover {
+            background: #333;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-bar {
+                flex-wrap: wrap;
+            }
+            .search-bar input[type="text"] {
+                min-width: 140px;
+                flex: 1;
+            }
+            table.pkg-table thead th,
+            table.pkg-table tbody td {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            .pkg-desc {
+                max-width: 200px;
+            }
+            .modal-box {
+                padding: 18px 20px;
+            }
+            .modal-field .label {
+                width: 70px;
+            }
+        }
+        @media (max-width: 500px) {
+            body { padding: 10px; }
+            .table-wrap { border-radius: 0; border-left: none; border-right: none; }
+            table.pkg-table thead th,
+            table.pkg-table tbody td {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            .modal-box {
+                padding: 14px 16px;
+                width: 95%;
+            }
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            margin-top: 30px;
+            padding-top: 16px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+        .footer a {
+            color: #1793d0;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <header>
-        <h1>📦 TouchFish 仓库 <small>软件包列表</small></h1>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 搜索包名或描述..." />
-            <span class="badge" id="countBadge">0 个包</span>
-        </div>
-    </header>
 
-    <div id="stats" class="stats hidden">
-        共 <span id="totalCount">0</span> 个软件包，当前显示 <span id="shownCount">0</span> 个
+    <!-- 头部 -->
+    <div class="header">
+        <h1>TouchFish TFVM Registry <small>软件包仓库</small></h1>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="搜索包名或描述..." />
+            <button id="searchBtn">搜索</button>
+        </div>
     </div>
 
-    <div id="loader" class="loader"></div>
+    <!-- 统计 -->
+    <div class="stats" id="statsArea">
+        共 <strong id="totalCount">0</strong> 个软件包，
+        当前显示 <strong id="shownCount">0</strong> 个
+    </div>
 
-    <div id="packageContainer" class="package-grid"></div>
+    <!-- 表格 -->
+    <div class="table-wrap" id="tableWrap">
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p style="margin-top:12px;">正在加载软件包数据...</p>
+        </div>
+        <table class="pkg-table" id="pkgTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>包名</th>
+                    <th>版本</th>
+                    <th>描述</th>
+                    <th>依赖 / 信息</th>
+                </tr>
+            </thead>
+            <tbody id="pkgBody"></tbody>
+        </table>
+        <!-- 分页 -->
+        <div class="pagination" id="pagination" style="display:none;">
+            <span class="info" id="pageInfo">第 1 / 1 页</span>
+            <a href="#" id="prevPage" class="disabled">‹ 上一页</a>
+            <span id="pageNumbers"></span>
+            <a href="#" id="nextPage">下一页 ›</a>
+        </div>
+    </div>
 
-    <div id="emptyState" class="empty-state hidden">
-        <h2>😕 没有找到匹配的包</h2>
+    <!-- 空状态 -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <h3>没有找到匹配的软件包</h3>
         <p>请尝试调整搜索关键词</p>
     </div>
 
-    <footer>
-        <p>数据源：<a href="db.yml" target="_blank">db.yml</a> &nbsp;·&nbsp; 
-        <a href="https://github.com/touchfish-devs/tfvm" target="_blank">tfvm GitHub</a></p>
-    </footer>
+    <!-- 模态框 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-title" id="modalTitle">包名</div>
+            <div class="modal-sub" id="modalSub">详细信息</div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-success" id="modalInstallBtn">安装 (tfvm -S ...)</button>
+                <a href="#" class="btn btn-primary" id="modalDownloadBtn" target="_blank">下载源码包</a>
+                <button class="btn btn-outline" id="modalCloseBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="footer">
+        数据源：<a href="db.yml" target="_blank">db.yml</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/touchfish-devs/tfvm" target="_blank">tfvm GitHub</a>
+    </div>
+
 </div>
 
+<!-- ===== 使用 js-yaml 解析 YAML ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js">
+</script>
+
 <script>
-    (function() {
-        const searchInput = document.getElementById('searchInput');
-        const container = document.getElementById('packageContainer');
-        const loader = document.getElementById('loader');
-        const emptyState = document.getElementById('emptyState');
-        const stats = document.getElementById('stats');
-        const totalCountSpan = document.getElementById('totalCount');
-        const shownCountSpan = document.getElementById('shownCount');
-        const countBadge = document.getElementById('countBadge');
+(function() {
+    'use strict';
 
-        let allPackages = []; // 存储所有包数据
+    // ----- DOM 引用 -----
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const totalCountSpan = document.getElementById('totalCount');
+    const shownCountSpan = document.getElementById('shownCount');
+    const loader = document.getElementById('loader');
+    const pkgTable = document.getElementById('pkgTable');
+    const pkgBody = document.getElementById('pkgBody');
+    const pagination = document.getElementById('pagination');
+    const pageInfo = document.getElementById('pageInfo');
+    const prevPage = document.getElementById('prevPage');
+    const nextPage = document.getElementById('nextPage');
+    const pageNumbers = document.getElementById('pageNumbers');
+    const emptyState = document.getElementById('emptyState');
 
-        // 从 db.yml 获取数据
-        async function fetchPackages() {
-            try {
-                const response = await fetch('https://reg.touchfish.us.ci/db.yml');
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const yamlText = await response.text();
-                // 使用 js-yaml 解析
-                const data = jsyaml.load(yamlText);
-                if (!data || typeof data !== 'object') {
-                    throw new Error('无效的 YAML 格式');
-                }
-                // 转换为数组，便于搜索
-                const packages = [];
-                for (const [name, info] of Object.entries(data)) {
-                    packages.push({
-                        name: name,
-                        ...info
-                    });
-                }
-                allPackages = packages;
-                renderPackages(allPackages);
-                updateStats(allPackages, allPackages);
-            } catch (err) {
-                console.error('加载包数据失败:', err);
-                container.innerHTML = `
-                    <div class="empty-state" style="display:block;">
-                        <h2>⚠️ 加载失败</h2>
-                        <p>无法获取包列表，请稍后重试。</p>
-                        <p style="font-size:0.85rem;color:#a0aec0;">${err.message}</p>
-                    </div>
-                `;
-                loader.classList.add('hidden');
-            } finally {
-                loader.classList.add('hidden');
+    // 模态框
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalClose = document.getElementById('modalClose');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSub = document.getElementById('modalSub');
+    const modalBody = document.getElementById('modalBody');
+    const modalInstallBtn = document.getElementById('modalInstallBtn');
+    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+    // ----- 状态 -----
+    let allPackages = [];
+    let filteredPackages = [];
+    let currentPage = 1;
+    const pageSize = 20;
+    let currentPkg = null;
+
+    // ----- 工具函数：确保值为数组 -----
+    function ensureArray(value) {
+        if (value === undefined || value === null) return [];
+        if (Array.isArray(value)) return value;
+        return [value];
+    }
+
+    // ----- 加载数据 -----
+    async function fetchPackages() {
+        try {
+            const resp = await fetch('db.yml');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const yamlText = await resp.text();
+            const data = jsyaml.load(yamlText);
+            if (!data || typeof data !== 'object') {
+                throw new Error('无效的 YAML 格式');
             }
-        }
-
-        // 渲染包卡片
-        function renderPackages(packages) {
-            if (!packages || packages.length === 0) {
-                container.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                stats.classList.add('hidden');
-                countBadge.textContent = '0 个包';
-                return;
+            const pkgs = [];
+            for (const [name, info] of Object.entries(data)) {
+                pkgs.push({
+                    name: name,
+                    Name: info.Name || name,
+                    Comment: info.Comment || '',
+                    Version: info.Version || '?',
+                    Release: info.Release,
+                    Exec: info.Exec || '',
+                    Binary: ensureArray(info.Binary),
+                    Depends: ensureArray(info.Depends),
+                    Registry: info.Registry || '',
+                    Provides: ensureArray(info.Provides)
+                });
             }
-            emptyState.classList.add('hidden');
-            stats.classList.remove('hidden');
+            allPackages = pkgs;
+            applyFilter();
+        } catch (err) {
+            console.error('加载失败:', err);
+            loader.innerHTML = `
+                <p style="color:#c0392b;">加载失败</p>
+                <p style="font-size:14px;color:#888;">${err.message}</p>
+                <button onclick="location.reload()" style="margin-top:12px;padding:6px 18px;border:1px solid #1793d0;background:transparent;border-radius:4px;cursor:pointer;color:#1793d0;">重试</button>
+            `;
+        }
+    }
 
-            let html = '';
-            packages.forEach(pkg => {
-                const deps = pkg.Depends || [];
-                const depHtml = deps.length ? 
-                    `<div class="package-deps">${deps.map(d => `<span class="dep-tag">${d}</span>`).join('')}</div>` : 
-                    '<div style="font-size:0.8rem;color:#a0aec0;">无依赖</div>';
+    // ----- 过滤 -----
+    function applyFilter() {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q) {
+            filteredPackages = allPackages.slice();
+        } else {
+            filteredPackages = allPackages.filter(pkg =>
+                pkg.name.toLowerCase().includes(q) ||
+                (pkg.Name && pkg.Name.toLowerCase().includes(q)) ||
+                (pkg.Comment && pkg.Comment.toLowerCase().includes(q))
+            );
+        }
+        filteredPackages.sort((a, b) => a.name.localeCompare(b.name));
+        currentPage = 1;
+        render();
+    }
 
-                // 构建下载链接（如果有镜像站）
-                let registryUrl = pkg.Registry || '';
-                if (registryUrl) {
-                    registryUrl = registryUrl.replace(/\$version\$/g, pkg.Version || '');
-                }
+    // ----- 渲染 -----
+    function render() {
+        const total = filteredPackages.length;
 
-                html += `
-                    <div class="package-card">
-                        <div class="package-name">
-                            ${pkg.name}
-                            <span class="version">v${pkg.Version || '?'}</span>
-                            ${pkg.Release ? `<span class="version" style="background:#fefcbf;color:#975a16;">rel ${pkg.Release}</span>` : ''}
-                        </div>
-                        <div class="package-desc">${pkg.Comment || '无描述'}</div>
-                        <div class="package-meta">
-                            <span><span class="label">全名：</span>${pkg.Name || pkg.name}</span>
-                            ${pkg.Exec ? `<span><span class="label">可执行：</span>${pkg.Exec}</span>` : ''}
-                        </div>
-                        ${depHtml}
-                        <div class="package-links">
-                            ${registryUrl ? `<a href="${registryUrl}" target="_blank">📥 下载源码</a>` : ''}
-                            ${pkg.Binary ? `<span style="color:#718096;">📂 二进制: ${pkg.Binary.join(', ')}</span>` : ''}
-                        </div>
-                    </div>
-                `;
+        totalCountSpan.textContent = allPackages.length;
+        shownCountSpan.textContent = total;
+
+        if (total === 0) {
+            pkgTable.style.display = 'none';
+            pagination.style.display = 'none';
+            emptyState.style.display = 'block';
+            loader.style.display = 'none';
+            return;
+        }
+        emptyState.style.display = 'none';
+        loader.style.display = 'none';
+        pkgTable.style.display = 'table';
+        pagination.style.display = 'flex';
+
+        const totalPages = Math.ceil(total / pageSize);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const start = (currentPage - 1) * pageSize;
+        const end = Math.min(start + pageSize, total);
+        const pageData = filteredPackages.slice(start, end);
+
+        let html = '';
+        pageData.forEach(pkg => {
+            const deps = pkg.Depends || [];
+            const depHtml = deps.length
+                ? `<div class="pkg-deps">${deps.map(d => `<span class="dep-tag">${d}</span>`).join('')}</div>`
+                : '<span style="color:#aaa;font-size:12px;">无依赖</span>';
+
+            let versionDisplay = pkg.Version;
+            if (pkg.Release !== undefined && pkg.Release !== null) {
+                versionDisplay += `-${pkg.Release}`;
+            }
+            const isBuild = pkg.Version === 'build-9999';
+            const badgeHtml = isBuild ? `<span class="build-badge">开发构建</span>` : '';
+
+            const binInfo = (pkg.Binary && pkg.Binary.length)
+                ? `<span class="label">二进制：</span>${pkg.Binary.join(', ')}`
+                : '';
+
+            html += `
+                <tr>
+                    <td>
+                        <a href="#" class="pkg-name" data-pkg="${pkg.name}">${pkg.name}</a>
+                        ${pkg.Exec ? `<div style="font-size:12px;color:#888;margin-top:2px;">Exec: ${pkg.Exec}</div>` : ''}
+                    </td>
+                    <td class="pkg-version">
+                        ${versionDisplay}
+                        ${badgeHtml}
+                    </td>
+                    <td class="pkg-desc">
+                        ${pkg.Comment || '—'}
+                        <div class="pkg-meta" style="margin-top:4px;">${binInfo}</div>
+                    </td>
+                    <td>${depHtml}</td>
+                </tr>
+            `;
+        });
+        pkgBody.innerHTML = html;
+
+        // 绑定点击事件
+        document.querySelectorAll('.pkg-name[data-pkg]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                const name = this.dataset.pkg;
+                showPackageDetail(name);
             });
-            container.innerHTML = html;
-            countBadge.textContent = `${packages.length} 个包`;
-            updateStats(allPackages, packages);
-        }
-
-        function updateStats(all, shown) {
-            totalCountSpan.textContent = all.length;
-            shownCountSpan.textContent = shown.length;
-        }
-
-        // 搜索过滤（不区分大小写，支持包名、全名、描述）
-        function filterPackages(query) {
-            if (!query.trim()) return allPackages;
-            const q = query.trim().toLowerCase();
-            return allPackages.filter(pkg => {
-                return pkg.name.toLowerCase().includes(q) ||
-                       (pkg.Name && pkg.Name.toLowerCase().includes(q)) ||
-                       (pkg.Comment && pkg.Comment.toLowerCase().includes(q));
-            });
-        }
-
-        // 搜索事件
-        searchInput.addEventListener('input', function() {
-            const filtered = filterPackages(this.value);
-            renderPackages(filtered);
         });
 
-        // 初始加载
-        fetchPackages();
-    })();
+        // 分页控件
+        pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+        prevPage.className = currentPage <= 1 ? 'disabled' : '';
+        prevPage.style.pointerEvents = currentPage <= 1 ? 'none' : 'auto';
+        nextPage.className = currentPage >= totalPages ? 'disabled' : '';
+        nextPage.style.pointerEvents = currentPage >= totalPages ? 'none' : 'auto';
+
+        let numsHtml = '';
+        const range = 3;
+        let startPage = Math.max(1, currentPage - range);
+        let endPage = Math.min(totalPages, currentPage + range);
+        if (startPage > 1) { numsHtml += `<span>…</span>`; }
+        for (let i = startPage; i <= endPage; i++) {
+            numsHtml += `<a href="#" data-page="${i}" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
+        }
+        if (endPage < totalPages) { numsHtml += `<span>…</span>`; }
+        pageNumbers.innerHTML = numsHtml;
+
+        pageNumbers.querySelectorAll('a[data-page]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = parseInt(this.dataset.page);
+                if (page !== currentPage) {
+                    currentPage = page;
+                    render();
+                }
+            });
+        });
+    }
+
+    // ----- 显示模态框 -----
+    function showPackageDetail(name) {
+        const pkg = allPackages.find(p => p.name === name);
+        if (!pkg) return;
+        currentPkg = pkg;
+
+        modalTitle.textContent = pkg.name;
+        const subParts = [];
+        if (pkg.Name && pkg.Name !== pkg.name) subParts.push(pkg.Name);
+        if (pkg.Comment) subParts.push(pkg.Comment);
+        modalSub.textContent = subParts.join(' — ') || '详细信息';
+
+        let bodyHtml = '';
+        const fields = [
+            { label: '版本', value: pkg.Version + (pkg.Release !== undefined ? `-${pkg.Release}` : '') },
+            { label: '可执行', value: pkg.Exec || '—' },
+            { label: '二进制', value: pkg.Binary && pkg.Binary.length ? pkg.Binary.join(', ') : '—' },
+            { label: '依赖', value: pkg.Depends && pkg.Depends.length ? pkg.Depends.join(', ') : '无' },
+            { label: '提供', value: pkg.Provides && pkg.Provides.length ? pkg.Provides.join(', ') : '—' },
+            { label: '源码', value: pkg.Registry ? `<a href="${pkg.Registry}" target="_blank">${pkg.Registry}</a>` : '—' }
+        ];
+        fields.forEach(f => {
+            bodyHtml += `<div class="modal-field"><span class="label">${f.label}</span><span class="value">${f.value}</span></div>`;
+        });
+
+        const installCmd = `tfvm -S ${pkg.name}`;
+        bodyHtml += `
+            <div style="margin-top:12px;">
+                <div style="font-weight:500;margin-bottom:4px;">安装命令</div>
+                <div class="copy-cmd">
+                    <code>${installCmd}</code>
+                    <button class="copy-btn" data-cmd="${installCmd}">复制</button>
+                </div>
+            </div>
+        `;
+
+        modalBody.innerHTML = bodyHtml;
+
+        modalInstallBtn.onclick = function() {
+            navigator.clipboard.writeText(installCmd).then(() => {
+                alert('已复制安装命令到剪贴板');
+            }).catch(() => {
+                const area = document.createElement('textarea');
+                area.value = installCmd;
+                document.body.appendChild(area);
+                area.select();
+                document.execCommand('copy');
+                document.body.removeChild(area);
+                alert('已复制安装命令到剪贴板');
+            });
+        };
+
+        if (pkg.Registry) {
+            modalDownloadBtn.href = pkg.Registry;
+            modalDownloadBtn.style.display = 'inline-block';
+        } else {
+            modalDownloadBtn.style.display = 'none';
+        }
+
+        modalOverlay.classList.add('active');
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const cmd = this.dataset.cmd;
+                navigator.clipboard.writeText(cmd).then(() => {
+                    const orig = this.textContent;
+                    this.textContent = '已复制';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                }).catch(() => {
+                    const area = document.createElement('textarea');
+                    area.value = cmd;
+                    document.body.appendChild(area);
+                    area.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(area);
+                    const orig = this.textContent;
+                    this.textContent = '已复制';
+                    setTimeout(() => { this.textContent = orig; }, 1500);
+                });
+            });
+        });
+    }
+
+    // ----- 模态框关闭 -----
+    function closeModal() {
+        modalOverlay.classList.remove('active');
+        currentPkg = null;
+    }
+    modalClose.addEventListener('click', closeModal);
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ----- 分页事件 -----
+    prevPage.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (currentPage > 1) { currentPage--; render(); }
+    });
+    nextPage.addEventListener('click', function(e) {
+        e.preventDefault();
+        const totalPages = Math.ceil(filteredPackages.length / pageSize);
+        if (currentPage < totalPages) { currentPage++; render(); }
+    });
+
+    // ----- 搜索事件 -----
+    searchBtn.addEventListener('click', applyFilter);
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') applyFilter();
+    });
+
+    // ----- 启动 -----
+    fetchPackages();
+})();
 </script>
 </body>
 </html>
