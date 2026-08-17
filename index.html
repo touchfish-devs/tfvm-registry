@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TouchFish TFVM Registry</title>
     <style>
         /* ===== 全局重置 & 字体 ===== */
@@ -60,7 +60,7 @@
             padding: 8px 12px;
             border-radius: 4px;
             border: 1px solid #ccc;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
         }
         .search-bar input[type="text"] {
             border: none;
@@ -105,7 +105,7 @@
             border-radius: 4px;
             border: 1px solid #ddd;
             overflow-x: auto;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
         table.pkg-table {
             width: 100%;
@@ -240,7 +240,9 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .empty-state {
@@ -261,7 +263,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             justify-content: center;
             align-items: center;
@@ -277,7 +279,7 @@
             width: 90%;
             border-radius: 8px;
             padding: 24px 28px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
@@ -420,8 +422,14 @@
             }
         }
         @media (max-width: 500px) {
-            body { padding: 10px; }
-            .table-wrap { border-radius: 0; border-left: none; border-right: none; }
+            body {
+                padding: 10px;
+            }
+            .table-wrap {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
             table.pkg-table thead th,
             table.pkg-table tbody td {
                 padding: 6px 8px;
@@ -452,399 +460,411 @@
     </style>
 </head>
 <body>
-<div class="container">
+    <div class="container">
 
-    <!-- 头部 -->
-    <div class="header">
-        <h1>TouchFish TFVM Registry <small>软件包仓库</small></h1>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="搜索包名或描述..." />
-            <button id="searchBtn">搜索</button>
-        </div>
-    </div>
-
-    <!-- 统计 -->
-    <div class="stats" id="statsArea">
-        共 <strong id="totalCount">0</strong> 个软件包，
-        当前显示 <strong id="shownCount">0</strong> 个
-    </div>
-
-    <!-- 表格 -->
-    <div class="table-wrap" id="tableWrap">
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-            <p style="margin-top:12px;">正在加载软件包数据...</p>
-        </div>
-        <table class="pkg-table" id="pkgTable" style="display:none;">
-            <thead>
-                <tr>
-                    <th>包名</th>
-                    <th>版本</th>
-                    <th>描述</th>
-                    <th>依赖 / 信息</th>
-                </tr>
-            </thead>
-            <tbody id="pkgBody"></tbody>
-        </table>
-        <!-- 分页 -->
-        <div class="pagination" id="pagination" style="display:none;">
-            <span class="info" id="pageInfo">第 1 / 1 页</span>
-            <a href="#" id="prevPage" class="disabled">‹ 上一页</a>
-            <span id="pageNumbers"></span>
-            <a href="#" id="nextPage">下一页 ›</a>
-        </div>
-    </div>
-
-    <!-- 空状态 -->
-    <div class="empty-state" id="emptyState" style="display:none;">
-        <h3>没有找到匹配的软件包</h3>
-        <p>请尝试调整搜索关键词</p>
-    </div>
-
-    <!-- 模态框 -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-box">
-            <button class="modal-close" id="modalClose">&times;</button>
-            <div class="modal-title" id="modalTitle">包名</div>
-            <div class="modal-sub" id="modalSub">详细信息</div>
-            <div id="modalBody"></div>
-            <div class="modal-actions">
-                <button class="btn btn-success" id="modalInstallBtn">安装 (tfvm -S ...)</button>
-                <a href="#" class="btn btn-primary" id="modalDownloadBtn" target="_blank">下载源码包</a>
-                <button class="btn btn-outline" id="modalCloseBtn">关闭</button>
+        <!-- 头部 -->
+        <div class="header">
+            <h1>TouchFish TFVM Registry <small>软件包仓库</small></h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="搜索包名或描述..." />
+                <button id="searchBtn">搜索</button>
             </div>
         </div>
-    </div>
 
-    <!-- 页脚 -->
-    <div class="footer">
-        数据源：<a href="db.yml" target="_blank">db.yml</a>
-        &nbsp;·&nbsp;
-        <a href="https://github.com/touchfish-devs/tfvm" target="_blank">tfvm GitHub</a>
-    </div>
+        <!-- 统计 -->
+        <div class="stats" id="statsArea">
+            共 <strong id="totalCount">0</strong> 个软件包，
+            当前显示 <strong id="shownCount">0</strong> 个
+        </div>
 
-</div>
+        <!-- 表格 -->
+        <div class="table-wrap" id="tableWrap">
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p style="margin-top:12px;">正在加载软件包数据...</p>
+            </div>
+            <table class="pkg-table" id="pkgTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>包名</th>
+                        <th>版本</th>
+                        <th>描述</th>
+                        <th>依赖 / 信息</th>
+                    </tr>
+                </thead>
+                <tbody id="pkgBody"></tbody>
+            </table>
+            <!-- 分页 -->
+            <div class="pagination" id="pagination" style="display:none;">
+                <span class="info" id="pageInfo">第 1 / 1 页</span>
+                <a href="#" id="prevPage" class="disabled">‹ 上一页</a>
+                <span id="pageNumbers"></span>
+                <a href="#" id="nextPage">下一页 ›</a>
+            </div>
+        </div>
 
-<!-- ===== 使用 js-yaml 解析 YAML ===== -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js">
-</script>
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <h3>没有找到匹配的软件包</h3>
+            <p>请尝试调整搜索关键词</p>
+        </div>
 
-<script>
-(function() {
-    'use strict';
-
-    // ----- DOM 引用 -----
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const totalCountSpan = document.getElementById('totalCount');
-    const shownCountSpan = document.getElementById('shownCount');
-    const loader = document.getElementById('loader');
-    const pkgTable = document.getElementById('pkgTable');
-    const pkgBody = document.getElementById('pkgBody');
-    const pagination = document.getElementById('pagination');
-    const pageInfo = document.getElementById('pageInfo');
-    const prevPage = document.getElementById('prevPage');
-    const nextPage = document.getElementById('nextPage');
-    const pageNumbers = document.getElementById('pageNumbers');
-    const emptyState = document.getElementById('emptyState');
-
-    // 模态框
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalClose = document.getElementById('modalClose');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalSub = document.getElementById('modalSub');
-    const modalBody = document.getElementById('modalBody');
-    const modalInstallBtn = document.getElementById('modalInstallBtn');
-    const modalDownloadBtn = document.getElementById('modalDownloadBtn');
-
-    // ----- 状态 -----
-    let allPackages = [];
-    let filteredPackages = [];
-    let currentPage = 1;
-    const pageSize = 20;
-    let currentPkg = null;
-
-    // ----- 工具函数：确保值为数组 -----
-    function ensureArray(value) {
-        if (value === undefined || value === null) return [];
-        if (Array.isArray(value)) return value;
-        return [value];
-    }
-
-    // ----- 加载数据 -----
-    async function fetchPackages() {
-        try {
-            const resp = await fetch('db.yml');
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const yamlText = await resp.text();
-            const data = jsyaml.load(yamlText);
-            if (!data || typeof data !== 'object') {
-                throw new Error('无效的 YAML 格式');
-            }
-            const pkgs = [];
-            for (const [name, info] of Object.entries(data)) {
-                pkgs.push({
-                    name: name,
-                    Name: info.Name || name,
-                    Comment: info.Comment || '',
-                    Version: info.Version || '?',
-                    Release: info.Release,
-                    Exec: info.Exec || '',
-                    Binary: ensureArray(info.Binary),
-                    Depends: ensureArray(info.Depends),
-                    Registry: info.Registry || '',
-                    Provides: ensureArray(info.Provides)
-                });
-            }
-            allPackages = pkgs;
-            applyFilter();
-        } catch (err) {
-            console.error('加载失败:', err);
-            loader.innerHTML = `
-                <p style="color:#c0392b;">加载失败</p>
-                <p style="font-size:14px;color:#888;">${err.message}</p>
-                <button onclick="location.reload()" style="margin-top:12px;padding:6px 18px;border:1px solid #1793d0;background:transparent;border-radius:4px;cursor:pointer;color:#1793d0;">重试</button>
-            `;
-        }
-    }
-
-    // ----- 过滤 -----
-    function applyFilter() {
-        const q = searchInput.value.trim().toLowerCase();
-        if (!q) {
-            filteredPackages = allPackages.slice();
-        } else {
-            filteredPackages = allPackages.filter(pkg =>
-                pkg.name.toLowerCase().includes(q) ||
-                (pkg.Name && pkg.Name.toLowerCase().includes(q)) ||
-                (pkg.Comment && pkg.Comment.toLowerCase().includes(q))
-            );
-        }
-        filteredPackages.sort((a, b) => a.name.localeCompare(b.name));
-        currentPage = 1;
-        render();
-    }
-
-    // ----- 渲染 -----
-    function render() {
-        const total = filteredPackages.length;
-
-        totalCountSpan.textContent = allPackages.length;
-        shownCountSpan.textContent = total;
-
-        if (total === 0) {
-            pkgTable.style.display = 'none';
-            pagination.style.display = 'none';
-            emptyState.style.display = 'block';
-            loader.style.display = 'none';
-            return;
-        }
-        emptyState.style.display = 'none';
-        loader.style.display = 'none';
-        pkgTable.style.display = 'table';
-        pagination.style.display = 'flex';
-
-        const totalPages = Math.ceil(total / pageSize);
-        if (currentPage > totalPages) currentPage = totalPages;
-        if (currentPage < 1) currentPage = 1;
-
-        const start = (currentPage - 1) * pageSize;
-        const end = Math.min(start + pageSize, total);
-        const pageData = filteredPackages.slice(start, end);
-
-        let html = '';
-        pageData.forEach(pkg => {
-            const deps = pkg.Depends || [];
-            const depHtml = deps.length
-                ? `<div class="pkg-deps">${deps.map(d => `<span class="dep-tag">${d}</span>`).join('')}</div>`
-                : '<span style="color:#aaa;font-size:12px;">无依赖</span>';
-
-            let versionDisplay = pkg.Version;
-            if (pkg.Release !== undefined && pkg.Release !== null) {
-                versionDisplay += `-${pkg.Release}`;
-            }
-            const isBuild = pkg.Version === 'build-9999';
-            const badgeHtml = isBuild ? `<span class="build-badge">开发构建</span>` : '';
-
-            const binInfo = (pkg.Binary && pkg.Binary.length)
-                ? `<span class="label">二进制：</span>${pkg.Binary.join(', ')}`
-                : '';
-
-            html += `
-                <tr>
-                    <td>
-                        <a href="#" class="pkg-name" data-pkg="${pkg.name}">${pkg.name}</a>
-                        ${pkg.Exec ? `<div style="font-size:12px;color:#888;margin-top:2px;">Exec: ${pkg.Exec}</div>` : ''}
-                    </td>
-                    <td class="pkg-version">
-                        ${versionDisplay}
-                        ${badgeHtml}
-                    </td>
-                    <td class="pkg-desc">
-                        ${pkg.Comment || '—'}
-                        <div class="pkg-meta" style="margin-top:4px;">${binInfo}</div>
-                    </td>
-                    <td>${depHtml}</td>
-                </tr>
-            `;
-        });
-        pkgBody.innerHTML = html;
-
-        // 绑定点击事件
-        document.querySelectorAll('.pkg-name[data-pkg]').forEach(el => {
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
-                const name = this.dataset.pkg;
-                showPackageDetail(name);
-            });
-        });
-
-        // 分页控件
-        pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
-        prevPage.className = currentPage <= 1 ? 'disabled' : '';
-        prevPage.style.pointerEvents = currentPage <= 1 ? 'none' : 'auto';
-        nextPage.className = currentPage >= totalPages ? 'disabled' : '';
-        nextPage.style.pointerEvents = currentPage >= totalPages ? 'none' : 'auto';
-
-        let numsHtml = '';
-        const range = 3;
-        let startPage = Math.max(1, currentPage - range);
-        let endPage = Math.min(totalPages, currentPage + range);
-        if (startPage > 1) { numsHtml += `<span>…</span>`; }
-        for (let i = startPage; i <= endPage; i++) {
-            numsHtml += `<a href="#" data-page="${i}" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
-        }
-        if (endPage < totalPages) { numsHtml += `<span>…</span>`; }
-        pageNumbers.innerHTML = numsHtml;
-
-        pageNumbers.querySelectorAll('a[data-page]').forEach(el => {
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
-                const page = parseInt(this.dataset.page);
-                if (page !== currentPage) {
-                    currentPage = page;
-                    render();
-                }
-            });
-        });
-    }
-
-    // ----- 显示模态框 -----
-    function showPackageDetail(name) {
-        const pkg = allPackages.find(p => p.name === name);
-        if (!pkg) return;
-        currentPkg = pkg;
-
-        modalTitle.textContent = pkg.name;
-        const subParts = [];
-        if (pkg.Name && pkg.Name !== pkg.name) subParts.push(pkg.Name);
-        if (pkg.Comment) subParts.push(pkg.Comment);
-        modalSub.textContent = subParts.join(' — ') || '详细信息';
-
-        let bodyHtml = '';
-        const fields = [
-            { label: '版本', value: pkg.Version + (pkg.Release !== undefined ? `-${pkg.Release}` : '') },
-            { label: '可执行', value: pkg.Exec || '—' },
-            { label: '二进制', value: pkg.Binary && pkg.Binary.length ? pkg.Binary.join(', ') : '—' },
-            { label: '依赖', value: pkg.Depends && pkg.Depends.length ? pkg.Depends.join(', ') : '无' },
-            { label: '提供', value: pkg.Provides && pkg.Provides.length ? pkg.Provides.join(', ') : '—' },
-            { label: '源码', value: pkg.Registry ? `<a href="${pkg.Registry}" target="_blank">${pkg.Registry}</a>` : '—' }
-        ];
-        fields.forEach(f => {
-            bodyHtml += `<div class="modal-field"><span class="label">${f.label}</span><span class="value">${f.value}</span></div>`;
-        });
-
-        const installCmd = `tfvm -S ${pkg.name}`;
-        bodyHtml += `
-            <div style="margin-top:12px;">
-                <div style="font-weight:500;margin-bottom:4px;">安装命令</div>
-                <div class="copy-cmd">
-                    <code>${installCmd}</code>
-                    <button class="copy-btn" data-cmd="${installCmd}">复制</button>
+        <!-- 模态框 -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-box">
+                <button class="modal-close" id="modalClose">&times;</button>
+                <div class="modal-title" id="modalTitle">包名</div>
+                <div class="modal-sub" id="modalSub">详细信息</div>
+                <div id="modalBody"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-success" id="modalInstallBtn">安装 (tfvm -S ...)</button>
+                    <a href="#" class="btn btn-primary" id="modalDownloadBtn" target="_blank">下载源码包</a>
+                    <button class="btn btn-outline" id="modalCloseBtn">关闭</button>
                 </div>
             </div>
-        `;
+        </div>
 
-        modalBody.innerHTML = bodyHtml;
+        <!-- 页脚 -->
+        <div class="footer">
+            数据源：<a href="db.yml" target="_blank">db.yml</a>
+            &nbsp;·&nbsp;
+            <a href="https://github.com/touchfish-devs/tfvm" target="_blank">tfvm GitHub</a>
+        </div>
 
-        modalInstallBtn.onclick = function() {
-            navigator.clipboard.writeText(installCmd).then(() => {
-                alert('已复制安装命令到剪贴板');
-            }).catch(() => {
-                const area = document.createElement('textarea');
-                area.value = installCmd;
-                document.body.appendChild(area);
-                area.select();
-                document.execCommand('copy');
-                document.body.removeChild(area);
-                alert('已复制安装命令到剪贴板');
-            });
-        };
+    </div>
 
-        if (pkg.Registry) {
-            modalDownloadBtn.href = pkg.Registry;
-            modalDownloadBtn.style.display = 'inline-block';
-        } else {
-            modalDownloadBtn.style.display = 'none';
-        }
+    <!-- ===== 使用 js-yaml 解析 YAML ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js">
+    </script>
 
-        modalOverlay.classList.add('active');
+    <script>
+        (function() {
+            'use strict';
 
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const cmd = this.dataset.cmd;
-                navigator.clipboard.writeText(cmd).then(() => {
-                    const orig = this.textContent;
-                    this.textContent = '已复制';
-                    setTimeout(() => { this.textContent = orig; }, 1500);
-                }).catch(() => {
-                    const area = document.createElement('textarea');
-                    area.value = cmd;
-                    document.body.appendChild(area);
-                    area.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(area);
-                    const orig = this.textContent;
-                    this.textContent = '已复制';
-                    setTimeout(() => { this.textContent = orig; }, 1500);
+            // ----- DOM 引用 -----
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const totalCountSpan = document.getElementById('totalCount');
+            const shownCountSpan = document.getElementById('shownCount');
+            const loader = document.getElementById('loader');
+            const pkgTable = document.getElementById('pkgTable');
+            const pkgBody = document.getElementById('pkgBody');
+            const pagination = document.getElementById('pagination');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevPage = document.getElementById('prevPage');
+            const nextPage = document.getElementById('nextPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+            const emptyState = document.getElementById('emptyState');
+
+            // 模态框
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSub = document.getElementById('modalSub');
+            const modalBody = document.getElementById('modalBody');
+            const modalInstallBtn = document.getElementById('modalInstallBtn');
+            const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+            // ----- 状态 -----
+            let allPackages = [];
+            let filteredPackages = [];
+            let currentPage = 1;
+            const pageSize = 20;
+            let currentPkg = null;
+
+            // ----- 工具函数：确保值为数组 -----
+            function ensureArray(value) {
+                if (value === undefined || value === null) return [];
+                if (Array.isArray(value)) return value;
+                return [value];
+            }
+
+            // 替换 Registry 中的 $version$ 占位符
+            function getRegistryUrl(pkg) {
+                if (!pkg || !pkg.Registry) return '';
+                if (!pkg.Version) return pkg.Registry;
+                return pkg.Registry.replace(/\$version\$/g, pkg.Version);
+            }
+
+            // ----- 加载数据 -----
+            async function fetchPackages() {
+                try {
+                    const resp = await fetch('db.yml');
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const yamlText = await resp.text();
+                    const data = jsyaml.load(yamlText);
+                    if (!data || typeof data !== 'object') {
+                        throw new Error('无效的 YAML 格式');
+                    }
+                    const pkgs = [];
+                    for (const [name, info] of Object.entries(data)) {
+                        pkgs.push({
+                            name: name,
+                            Name: info.Name || name,
+                            Comment: info.Comment || '',
+                            Version: info.Version || '?',
+                            Release: info.Release,
+                            Exec: info.Exec || '',
+                            Binary: ensureArray(info.Binary),
+                            Depends: ensureArray(info.Depends),
+                            Registry: info.Registry || '',
+                            Provides: ensureArray(info.Provides)
+                        });
+                    }
+                    allPackages = pkgs;
+                    applyFilter();
+                } catch (err) {
+                    console.error('加载失败:', err);
+                    loader.innerHTML = `
+                        <p style="color:#c0392b;">加载失败</p>
+                        <p style="font-size:14px;color:#888;">${err.message}</p>
+                        <button onclick="location.reload()" style="margin-top:12px;padding:6px 18px;border:1px solid #1793d0;background:transparent;border-radius:4px;cursor:pointer;color:#1793d0;">重试</button>
+                    `;
+                }
+            }
+
+            // ----- 过滤 -----
+            function applyFilter() {
+                const q = searchInput.value.trim().toLowerCase();
+                if (!q) {
+                    filteredPackages = allPackages.slice();
+                } else {
+                    filteredPackages = allPackages.filter(pkg =>
+                        pkg.name.toLowerCase().includes(q) ||
+                        (pkg.Name && pkg.Name.toLowerCase().includes(q)) ||
+                        (pkg.Comment && pkg.Comment.toLowerCase().includes(q))
+                    );
+                }
+                filteredPackages.sort((a, b) => a.name.localeCompare(b.name));
+                currentPage = 1;
+                render();
+            }
+
+            // ----- 渲染 -----
+            function render() {
+                const total = filteredPackages.length;
+
+                totalCountSpan.textContent = allPackages.length;
+                shownCountSpan.textContent = total;
+
+                if (total === 0) {
+                    pkgTable.style.display = 'none';
+                    pagination.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    loader.style.display = 'none';
+                    return;
+                }
+                emptyState.style.display = 'none';
+                loader.style.display = 'none';
+                pkgTable.style.display = 'table';
+                pagination.style.display = 'flex';
+
+                const totalPages = Math.ceil(total / pageSize);
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                const start = (currentPage - 1) * pageSize;
+                const end = Math.min(start + pageSize, total);
+                const pageData = filteredPackages.slice(start, end);
+
+                let html = '';
+                pageData.forEach(pkg => {
+                    const deps = pkg.Depends || [];
+                    const depHtml = deps.length ?
+                        `<div class="pkg-deps">${deps.map(d => `<span class="dep-tag">${d}</span>`).join('')}</div>` :
+                        '<span style="color:#aaa;font-size:12px;">无依赖</span>';
+
+                    let versionDisplay = pkg.Version;
+                    if (pkg.Release !== undefined && pkg.Release !== null) {
+                        versionDisplay += `-${pkg.Release}`;
+                    }
+                    const isBuild = pkg.Version === 'build-9999';
+                    const badgeHtml = isBuild ? `<span class="build-badge">开发构建</span>` : '';
+
+                    const binInfo = (pkg.Binary && pkg.Binary.length) ?
+                        `<span class="label">二进制：</span>${pkg.Binary.join(', ')}` :
+                        '';
+
+                    html += `
+                        <tr>
+                            <td>
+                                <a href="#" class="pkg-name" data-pkg="${pkg.name}">${pkg.name}</a>
+                                ${pkg.Exec ? `<div style="font-size:12px;color:#888;margin-top:2px;">Exec: ${pkg.Exec}</div>` : ''}
+                            </td>
+                            <td class="pkg-version">
+                                ${versionDisplay}
+                                ${badgeHtml}
+                            </td>
+                            <td class="pkg-desc">
+                                ${pkg.Comment || '—'}
+                                <div class="pkg-meta" style="margin-top:4px;">${binInfo}</div>
+                            </td>
+                            <td>${depHtml}</td>
+                        </tr>
+                    `;
                 });
+                pkgBody.innerHTML = html;
+
+                // 绑定点击事件
+                document.querySelectorAll('.pkg-name[data-pkg]').forEach(el => {
+                    el.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const name = this.dataset.pkg;
+                        showPackageDetail(name);
+                    });
+                });
+
+                // 分页控件
+                pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+                prevPage.className = currentPage <= 1 ? 'disabled' : '';
+                prevPage.style.pointerEvents = currentPage <= 1 ? 'none' : 'auto';
+                nextPage.className = currentPage >= totalPages ? 'disabled' : '';
+                nextPage.style.pointerEvents = currentPage >= totalPages ? 'none' : 'auto';
+
+                let numsHtml = '';
+                const range = 3;
+                let startPage = Math.max(1, currentPage - range);
+                let endPage = Math.min(totalPages, currentPage + range);
+                if (startPage > 1) { numsHtml += `<span>…</span>`; }
+                for (let i = startPage; i <= endPage; i++) {
+                    numsHtml += `<a href="#" data-page="${i}" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
+                }
+                if (endPage < totalPages) { numsHtml += `<span>…</span>`; }
+                pageNumbers.innerHTML = numsHtml;
+
+                pageNumbers.querySelectorAll('a[data-page]').forEach(el => {
+                    el.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = parseInt(this.dataset.page);
+                        if (page !== currentPage) {
+                            currentPage = page;
+                            render();
+                        }
+                    });
+                });
+            }
+
+            // ----- 显示模态框 -----
+            function showPackageDetail(name) {
+                const pkg = allPackages.find(p => p.name === name);
+                if (!pkg) return;
+                currentPkg = pkg;
+
+                modalTitle.textContent = pkg.name;
+                const subParts = [];
+                if (pkg.Name && pkg.Name !== pkg.name) subParts.push(pkg.Name);
+                if (pkg.Comment) subParts.push(pkg.Comment);
+                modalSub.textContent = subParts.join(' — ') || '详细信息';
+
+                const registryUrl = getRegistryUrl(pkg);
+
+                let bodyHtml = '';
+                const fields = [
+                    { label: '版本', value: pkg.Version + (pkg.Release !== undefined ? `-${pkg.Release}` : '') },
+                    { label: '可执行', value: pkg.Exec || '—' },
+                    { label: '二进制', value: pkg.Binary && pkg.Binary.length ? pkg.Binary.join(', ') : '—' },
+                    { label: '依赖', value: pkg.Depends && pkg.Depends.length ? pkg.Depends.join(', ') : '无' },
+                    { label: '提供', value: pkg.Provides && pkg.Provides.length ? pkg.Provides.join(', ') : '—' },
+                    { label: '源码', value: registryUrl ? `<a href="${registryUrl}" target="_blank">${registryUrl}</a>` : '—' }
+                ];
+                fields.forEach(f => {
+                    bodyHtml +=
+                        `<div class="modal-field"><span class="label">${f.label}</span><span class="value">${f.value}</span></div>`;
+                });
+
+                const installCmd = `tfvm -S ${pkg.name}`;
+                bodyHtml += `
+                    <div style="margin-top:12px;">
+                        <div style="font-weight:500;margin-bottom:4px;">安装命令</div>
+                        <div class="copy-cmd">
+                            <code>${installCmd}</code>
+                            <button class="copy-btn" data-cmd="${installCmd}">复制</button>
+                        </div>
+                    </div>
+                `;
+
+                modalBody.innerHTML = bodyHtml;
+
+                modalInstallBtn.onclick = function() {
+                    navigator.clipboard.writeText(installCmd).then(() => {
+                        alert('已复制安装命令到剪贴板');
+                    }).catch(() => {
+                        const area = document.createElement('textarea');
+                        area.value = installCmd;
+                        document.body.appendChild(area);
+                        area.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(area);
+                        alert('已复制安装命令到剪贴板');
+                    });
+                };
+
+                if (registryUrl) {
+                    modalDownloadBtn.href = registryUrl;
+                    modalDownloadBtn.style.display = 'inline-block';
+                } else {
+                    modalDownloadBtn.style.display = 'none';
+                }
+
+                modalOverlay.classList.add('active');
+
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const cmd = this.dataset.cmd;
+                        navigator.clipboard.writeText(cmd).then(() => {
+                            const orig = this.textContent;
+                            this.textContent = '已复制';
+                            setTimeout(() => { this.textContent = orig; }, 1500);
+                        }).catch(() => {
+                            const area = document.createElement('textarea');
+                            area.value = cmd;
+                            document.body.appendChild(area);
+                            area.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(area);
+                            const orig = this.textContent;
+                            this.textContent = '已复制';
+                            setTimeout(() => { this.textContent = orig; }, 1500);
+                        });
+                    });
+                });
+            }
+
+            // ----- 模态框关闭 -----
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                currentPkg = null;
+            }
+            modalClose.addEventListener('click', closeModal);
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
             });
-        });
-    }
 
-    // ----- 模态框关闭 -----
-    function closeModal() {
-        modalOverlay.classList.remove('active');
-        currentPkg = null;
-    }
-    modalClose.addEventListener('click', closeModal);
-    modalCloseBtn.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
+            // ----- 分页事件 -----
+            prevPage.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentPage > 1) { currentPage--;
+                    render(); }
+            });
+            nextPage.addEventListener('click', function(e) {
+                e.preventDefault();
+                const totalPages = Math.ceil(filteredPackages.length / pageSize);
+                if (currentPage < totalPages) { currentPage++;
+                    render(); }
+            });
 
-    // ----- 分页事件 -----
-    prevPage.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (currentPage > 1) { currentPage--; render(); }
-    });
-    nextPage.addEventListener('click', function(e) {
-        e.preventDefault();
-        const totalPages = Math.ceil(filteredPackages.length / pageSize);
-        if (currentPage < totalPages) { currentPage++; render(); }
-    });
+            // ----- 搜索事件 -----
+            searchBtn.addEventListener('click', applyFilter);
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') applyFilter();
+            });
 
-    // ----- 搜索事件 -----
-    searchBtn.addEventListener('click', applyFilter);
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') applyFilter();
-    });
-
-    // ----- 启动 -----
-    fetchPackages();
-})();
-</script>
+            // ----- 启动 -----
+            fetchPackages();
+        })();
+    </script>
 </body>
 </html>
