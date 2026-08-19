@@ -1,25 +1,23 @@
-touchfish-v4:
-  Name: TouchFish v4
-  Comment: "TouchFish v4"
-  Version: 4.11.0
-  Release: 1
-  Registry: "https://github.com/touchfish-devs/TouchFish-AUR/archive/refs/tags/v$version$.tar.gz"
-  Exec: LTS.py
-  Binary:
-    - LTS.py
-  Depends:
-    - tfvm
-fastpkg:
-  Name: FastPkg
-  Comment: "AUR packaging and debugging tool"
-  Version: 1.0.0
-  Release: 1
-  Registry: "https://github.com/JohnChiao75/FastPkg/archive/refs/tags/v$version$.tar.gz"
-  Exec: main.py
-  Binary:
-    - main.py
-  Depends:
-    - tfvm
+# db.yml
+# 组织说明：
+# - 优先放置包管理工具（tfvm），因为其它包依赖它。
+# - TouchFish 系列按优先级排列：v5 在上，v4 在下；同一主版本中发布版（正式版）优先于构建/开发版。
+# - 其它软件（非 TouchFish）放在末尾。
+#
+# 字段说明（常见）：
+# Name: 显示名
+# Comment: 描述
+# Version: 版本号（用于在 Registry URL 中替换 $version$）
+# Release: 发布号
+# Provides: 该包提供的虚拟包名（可选）
+# Registry: 下载地址（通常包含 $version$ 占位符）
+# Exec: 可执行文件名（供 tfvm 调用）
+# Binary: 可执行二进制/脚本列表
+# Depends: 依赖列表
+#
+# 更新时间：2026-08-19（按用户要求整理并添加注释）
+
+# 1) 包管理工具：tfvm（放在首位）
 tfvm:
   Name: tfvm
   Comment: TouchFish Version Manager
@@ -28,13 +26,25 @@ tfvm:
   Registry: https://github.com/touchfish-devs/tfvm/archive/refs/tags/v$version$.tar.gz
   Exec: main.py
   Binary:
-    - main.py   
-# touchfish-client:
-#   Name: TouchFish Client
-#   Comment: "TouchFish Client for v5"
-#   Version: 0.0.1
-#   Release: 1
-#   Registry: https://github.com/ILoveScratch2/TouchFish-Client/archive/refs/tags/
+    - main.py
+
+# 2) TouchFish 系列（v5 在上，v4 在下；发布版在构建版之前）
+# 2.1 TouchFish v5 - 发布 / 正式版
+# 说明：服务端是 v5 的正式发布版
+touchfish-server:
+  Name: TouchFish Server
+  Comment: "Server backend for TouchFish v5"
+  Version: 5.0.0
+  Release: 1
+  Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/v$version$/TouchFishServer_linux.zip"
+  Exec: touchfish-server
+  Binary:
+    - TouchFishServer
+  Depends: 
+    - tfvm
+
+# 2.2 TouchFish v5 - 构建 / 开发版
+# 说明：客户端开发构建，提供 touchfish-client 虚拟包名供依赖匹配
 touchfish-client-build:
   Name: TouchFish Client Build
   Comment: "TouchFish Client development build"
@@ -47,14 +57,38 @@ touchfish-client-build:
     - touchfish_client
   Depends:
     - tfvm
-touchfish-server:
-  Name: TouchFish Server
-  Comment: "Server backend for TouchFish v5"
-  Version: 5.0.0
+
+# 2.3 TouchFish v4 - 发布 / 正式版（放在 v5 之后）
+touchfish-v4:
+  Name: TouchFish v4
+  Comment: "TouchFish v4"
+  Version: 4.11.0
   Release: 1
-  Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/v$version$/TouchFishServer_linux.zip"
-  Exec: touchfish-server
+  Registry: "https://github.com/touchfish-devs/TouchFish-AUR/archive/refs/tags/v$version$.tar.gz"
+  Exec: LTS.py
   Binary:
-    - TouchFishServer
-  Depends: 
+    - LTS.py
+  Depends:
     - tfvm
+
+# 3) 其它软件（非 TouchFish 系列）
+# 按原有条目保留并放到最后
+fastpkg:
+  Name: FastPkg
+  Comment: "AUR packaging and debugging tool"
+  Version: 1.0.0
+  Release: 1
+  Registry: "https://github.com/JohnChiao75/FastPkg/archive/refs/tags/v$version$.tar.gz"
+  Exec: main.py
+  Binary:
+    - main.py
+  Depends:
+    - tfvm
+
+# 备份/注释掉的条目（保留原注释以便日后恢复）
+# touchfish-client:
+#   Name: TouchFish Client
+#   Comment: "TouchFish Client for v5"
+#   Version: 0.0.1
+#   Release: 1
+#   Registry: https://github.com/ILoveScratch2/TouchFish-Client/archive/refs/tags/
