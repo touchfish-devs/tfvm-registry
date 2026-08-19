@@ -44,7 +44,9 @@ touchfish-server:
     - tfvm
 
 # 2.2 TouchFish v5 - 构建 / 开发版
-# 说明：客户端开发构建，提供 touchfish-client 虚拟包名供依赖匹配
+# 说明：以下为 v5 的开发构建/预编译版本，提供对应的虚拟包名以便依赖匹配
+
+# TouchFish 客户端 开发构建
 touchfish-client-build:
   Name: TouchFish Client Build
   Comment: "TouchFish Client development build"
@@ -55,6 +57,21 @@ touchfish-client-build:
   Exec: touchfish-client
   Binary:
     - touchfish_client
+  Depends:
+    - tfvm
+
+# TouchFish 服务端 开发构建（dev-build tag 下的预编译版本）
+# 新增：包名 touchfish-server-build，提供 touchfish-server
+touchfish-server-build:
+  Name: TouchFish Server Build
+  Comment: "TouchFish Server development build (dev-build tag)"
+  Version: build
+  Release: 9999
+  Provides: touchfish-server
+  Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/dev-build/TouchFishServer_linux.zip"
+  Exec: touchfish-server
+  Binary:
+    - TouchFishServer
   Depends:
     - tfvm
 
