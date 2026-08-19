@@ -1,6 +1,6 @@
-touchfish:
-  Name: TouchFish
-  Comment: "FOSS multi-distribution LAN chatting tool"
+touchfish-v4:
+  Name: TouchFish v4
+  Comment: "TouchFish v4"
   Version: 4.11.0
   Release: 1
   Registry: "https://github.com/touchfish-devs/TouchFish-AUR/archive/refs/tags/v$version$.tar.gz"
@@ -28,16 +28,33 @@ tfvm:
   Registry: https://github.com/touchfish-devs/tfvm/archive/refs/tags/v$version$.tar.gz
   Exec: main.py
   Binary:
-    - main.py    
+    - main.py   
+# touchfish-client:
+#   Name: TouchFish Client
+#   Comment: "TouchFish Client for v5"
+#   Version: 0.0.1
+#   Release: 1
+#   Registry: https://github.com/ILoveScratch2/TouchFish-Client/archive/refs/tags/
 touchfish-client-build:
   Name: TouchFish Client Build
-  Comment: "TouchFish Client development build (2026-07-06, commit 2c8cf28)"
+  Comment: "TouchFish Client development build"
   Version: build
   Release: 9999
   Provides: touchfish-client
   Registry: "https://github.com/ILoveScratch2/TouchFish-Client/releases/download/dev-build/touchfish-linux-x64.zip"
-  Exec: touchfish_client
+  Exec: touchfish-client
   Binary:
     - touchfish_client
   Depends:
+    - tfvm
+touchfish-server:
+  Name: TouchFish Server
+  Comment: "Server backend for TouchFish v5"
+  Version: 5.0.0
+  Release: 1
+  Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/v$version$/TouchFishServer_linux.zip"
+  Exec: touchfish-server
+  Binary:
+    - TouchFishServer
+  Depends: 
     - tfvm
