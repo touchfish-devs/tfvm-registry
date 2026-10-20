@@ -29,12 +29,12 @@ tfvm:
     - main.py
 
 # 2) TouchFish 系列（v5 在上，v4 在下；发布版在构建版之前）
-# 2.1 TouchFish v5 - 发布 / 正式版
+# TouchFish v5 - 发布 / 正式版
 # 说明：服务端是 v5 的正式发布版
 touchfish-server:
   Name: TouchFish Server
   Comment: "Server backend for TouchFish v5"
-  Version: 5.0.0
+  Version: 5.0.2
   Release: 1
   Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/v$version$/TouchFishServer_linux.zip"
   Exec: touchfish-server
@@ -43,7 +43,23 @@ touchfish-server:
   Depends: 
     - tfvm
 
-# 2.2 TouchFish v5 - 构建 / 开发版
+
+# TouchFish 客户端
+touchfish-client:
+  Name: TouchFish Client
+  Comment: "TouchFish Client for v5"
+  Version: 0.0.3
+  Release: 1
+  Provides: touchfish-client
+  Registry: https://github.com/ILoveScratch2/TouchFish-Client/releases/download/$version$/touchfish-linux-x64.zip
+  Exec: touchfish-client
+  Binary:
+    - touchfish_client
+  Depends:
+    - tfvm
+
+
+# TouchFish v5 - 构建 / 开发版
 # 说明：以下为 v5 的开发构建/预编译版本，提供对应的虚拟包名以便依赖匹配
 
 # TouchFish 客户端 开发构建
@@ -60,8 +76,7 @@ touchfish-client-build:
   Depends:
     - tfvm
 
-# TouchFish 服务端 开发构建（dev-build tag 下的预编译版本）
-# 新增：包名 touchfish-server-build，提供 touchfish-server
+# TouchFish 服务端
 touchfish-server-build:
   Name: TouchFish Server Build
   Comment: "TouchFish Server development build (dev-build tag)"
@@ -75,7 +90,8 @@ touchfish-server-build:
   Depends:
     - tfvm
 
-# 2.3 TouchFish v4 - 发布 / 正式版（放在 v5 之后）
+
+# TouchFish v4
 touchfish-v4:
   Name: TouchFish v4
   Comment: "TouchFish v4"
@@ -88,24 +104,4 @@ touchfish-v4:
   Depends:
     - tfvm
 
-# 3) 其它软件（非 TouchFish 系列）
-# 按原有条目保留并放到最后
-fastpkg:
-  Name: FastPkg
-  Comment: "AUR packaging and debugging tool"
-  Version: 1.0.0
-  Release: 1
-  Registry: "https://github.com/JohnChiao75/FastPkg/archive/refs/tags/v$version$.tar.gz"
-  Exec: main.py
-  Binary:
-    - main.py
-  Depends:
-    - tfvm
 
-# 备份/注释掉的条目（保留原注释以便日后恢复）
-# touchfish-client:
-#   Name: TouchFish Client
-#   Comment: "TouchFish Client for v5"
-#   Version: 0.0.1
-#   Release: 1
-#   Registry: https://github.com/ILoveScratch2/TouchFish-Client/archive/refs/tags/
