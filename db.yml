@@ -34,7 +34,7 @@ tfvm:
 touchfish-server:
   Name: TouchFish Server
   Comment: "Server backend for TouchFish v5"
-  Version: 5.0.2
+  Version: 5.1.0
   Release: 1
   Registry: "https://github.com/2044-space-elevator/TouchFishServer/releases/download/v$version$/TouchFishServer_linux.zip"
   Exec: touchfish-server
@@ -48,8 +48,8 @@ touchfish-server:
 touchfish-client:
   Name: TouchFish Client
   Comment: "TouchFish Client for v5"
-  Version: 0.0.3
-  Release: 1
+  Version: 0.0.5
+  Release: 50
   Provides: touchfish-client
   Registry: https://github.com/ILoveScratch2/TouchFish-Client/releases/download/$version$/touchfish-linux-x64.zip
   Exec: touchfish-client
